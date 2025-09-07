@@ -165,7 +165,17 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### What this means:
+- ✅ **Free to use** for any purpose (personal or commercial)
+- ✅ **Free to modify** and distribute
+- ✅ **Free to sell** or include in proprietary software
+- ✅ **Attribution required** - must include the license notice
+- ✅ **No warranty** - use at your own risk
+
+### Quick Summary:
+You can do almost anything with this code, just include the original license notice and don't hold the authors liable for any issues.
 
 ## 🙏 Acknowledgments
 
