@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { RealTimeDashboard } from "@/components/real-time-dashboard";
+import { ShutdownButton } from "@/components/shutdown-button";
 import { getSystemDetails } from "@/lib/system";
 
 export default async function Home() {
@@ -40,10 +41,15 @@ export default async function Home() {
           <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Welcome to Your Raspberry Pi
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Monitor your Raspberry Pi's performance, manage services, and explore the endless possibilities 
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+            Monitor your Raspberry Pi's performance, manage services, and explore the endless possibilities
             of your single-board computer.
           </p>
+
+          {/* System Control Panel */}
+          <div className="flex justify-center">
+            <ShutdownButton />
+          </div>
         </section>
 
         {/* Real-time Dashboard */}
@@ -109,13 +115,12 @@ export default async function Home() {
                     <span className="text-muted-foreground">Available:</span>
                     <span className="font-medium">{systemInfo.storage.available} / {systemInfo.storage.total} </span>
                   </div>
-                  <Progress 
-                    value={parseFloat(systemInfo.storage.usagePercent)} 
-                    className={`h-2 mt-2 ${
-                      parseFloat(systemInfo.storage.usagePercent) > 90 ? '[&>div]:bg-red-500' :
+                  <Progress
+                    value={parseFloat(systemInfo.storage.usagePercent)}
+                    className={`h-2 mt-2 ${parseFloat(systemInfo.storage.usagePercent) > 90 ? '[&>div]:bg-red-500' :
                       parseFloat(systemInfo.storage.usagePercent) > 70 ? '[&>div]:bg-orange-500' :
-                      '[&>div]:bg-green-500'
-                    }`} 
+                        '[&>div]:bg-green-500'
+                      }`}
                   />
                 </div>
               </CardContent>

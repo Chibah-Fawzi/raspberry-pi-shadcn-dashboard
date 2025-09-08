@@ -7,10 +7,10 @@ export async function GET(request: NextRequest) {
 
   const encoder = new TextEncoder();
   
+  let intervalId: NodeJS.Timeout | null = null;
+  let isClosed = false;
   const stream = new ReadableStream({
     start(controller) {
-      let intervalId: NodeJS.Timeout | null = null;
-      let isClosed = false;
       
       const cleanup = () => {
         isClosed = true;
