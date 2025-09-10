@@ -5,6 +5,9 @@ import fs from "fs";
 
 const execAsync = promisify(exec);
 
+// Track if we've already warned about vcgencmd not being available
+let vcgencmdWarningShown = false;
+
 function getCpuUsage() {
   const cpus = os.cpus();
   return cpus.map((cpu) => {
@@ -15,9 +18,18 @@ function getCpuUsage() {
 }
 
 async function getCpuTemp() {
-  const { stdout } = await execAsync("vcgencmd measure_temp");
-  // in celsius! OBVIOUSLY!
-  return parseFloat(stdout.replace("temp=", "").replace("'C", ""));
+  try {
+    const { stdout } = await execAsync("vcgencmd measure_temp");
+    // in celsius! OBVIOUSLY!
+    return parseFloat(stdout.replace("temp=", "").replace("'C", ""));
+  } catch (error) {
+    // Fallback for non-Raspberry Pi environments (like Docker build)
+    if (!vcgencmdWarningShown) {
+      console.warn("vcgencmd not available, using fallback temperature");
+      vcgencmdWarningShown = true;
+    }
+    return 25.0; // Default temperature in Celsius
+  }
 }
 
 function bytesToGB(bytes: number) {
@@ -57,6 +69,7 @@ async function getUptime() {
     const { stdout } = await execAsync("uptime -p");
     return stdout.trim();
   } catch (error) {
+    // Fallback for environments where uptime command is not available
     return "Unknown";
   }
 }

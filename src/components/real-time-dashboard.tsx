@@ -12,16 +12,18 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
   const { data, isConnected, error, lastUpdate } = useSystemData(5000);
   const systemInfo = data || initialData;
 
+  // Show a warning if we're using initial data and not connected
+  const isUsingInitialData = !data && !isConnected;
+
   return (
     <>
       {/* Connection Status */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className={`w-3 h-3 rounded-full ${
-            isConnected ? 'bg-green-500' : 'bg-red-500'
-          }`}></div>
+          <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'
+            }`}></div>
           <span className="text-sm text-muted-foreground">
-            {isConnected ? 'Live Data' : 'Disconnected'}
+            {isConnected ? 'Live Data' : isUsingInitialData ? 'Static Data (No Live Updates)' : 'Disconnected'}
           </span>
           {lastUpdate && (
             <span className="text-xs text-muted-foreground">
@@ -29,11 +31,19 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
             </span>
           )}
         </div>
-        {error && (
-          <div className="text-sm text-red-600 dark:text-red-400">
-            {error}
-          </div>
-        )}
+        <div className="flex items-center space-x-2">
+          {error && (
+            <div className="text-sm text-red-600 dark:text-red-400">
+              {error}
+            </div>
+          )}
+          <button
+            onClick={() => window.location.reload()}
+            className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry Connection
+          </button>
+        </div>
       </div>
 
       {/* Quick Stats Overview */}
@@ -76,20 +86,18 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <div className={`text-3xl font-bold ${
-                systemInfo.cpuTemp > 80 ? 'text-red-600 dark:text-red-400' :
+              <div className={`text-3xl font-bold ${systemInfo.cpuTemp > 80 ? 'text-red-600 dark:text-red-400' :
                 systemInfo.cpuTemp > 60 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
+                  'text-green-600 dark:text-green-400'
+                }`}>
                 {systemInfo.cpuTemp.toFixed(1)}°C
               </div>
-              <p className={`text-sm mt-2 ${
-                systemInfo.cpuTemp > 80 ? 'text-red-600 dark:text-red-400' :
+              <p className={`text-sm mt-2 ${systemInfo.cpuTemp > 80 ? 'text-red-600 dark:text-red-400' :
                 systemInfo.cpuTemp > 60 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
-                {systemInfo.cpuTemp > 80 ? "🔴 High Temperature" : 
-                 systemInfo.cpuTemp > 60 ? "🟠 Warm" : "🟢 Normal"}
+                  'text-green-600 dark:text-green-400'
+                }`}>
+                {systemInfo.cpuTemp > 80 ? "🔴 High Temperature" :
+                  systemInfo.cpuTemp > 60 ? "🟠 Warm" : "🟢 Normal"}
               </p>
             </div>
           </CardContent>
@@ -104,18 +112,16 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <div className={`text-3xl font-bold ${
-                (systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.9 ? 'text-red-600 dark:text-red-400' :
+              <div className={`text-3xl font-bold ${(systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.9 ? 'text-red-600 dark:text-red-400' :
                 (systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.7 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
+                  'text-green-600 dark:text-green-400'
+                }`}>
                 {((systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) * 100).toFixed(1)}%
               </div>
-              <p className={`text-sm mt-2 ${
-                (systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.9 ? 'text-red-600 dark:text-red-400' :
+              <p className={`text-sm mt-2 ${(systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.9 ? 'text-red-600 dark:text-red-400' :
                 (systemInfo.memoryUsage.used / systemInfo.memoryUsage.total) > 0.7 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
+                  'text-green-600 dark:text-green-400'
+                }`}>
                 {systemInfo.memoryUsage.used.toFixed(1)}GB / {systemInfo.memoryUsage.total.toFixed(1)}GB
               </p>
             </div>
@@ -131,18 +137,16 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-center">
-              <div className={`text-3xl font-bold ${
-                parseFloat(systemInfo.storage.usagePercent) > 90 ? 'text-red-600 dark:text-red-400' :
+              <div className={`text-3xl font-bold ${parseFloat(systemInfo.storage.usagePercent) > 90 ? 'text-red-600 dark:text-red-400' :
                 parseFloat(systemInfo.storage.usagePercent) > 70 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
+                  'text-green-600 dark:text-green-400'
+                }`}>
                 {systemInfo.storage.usagePercent}%
               </div>
-              <p className={`text-sm mt-2 ${
-                parseFloat(systemInfo.storage.usagePercent) > 90 ? 'text-red-600 dark:text-red-400' :
+              <p className={`text-sm mt-2 ${parseFloat(systemInfo.storage.usagePercent) > 90 ? 'text-red-600 dark:text-red-400' :
                 parseFloat(systemInfo.storage.usagePercent) > 70 ? 'text-orange-600 dark:text-orange-400' :
-                'text-green-600 dark:text-green-400'
-              }`}>
+                  'text-green-600 dark:text-green-400'
+                }`}>
                 {systemInfo.storage.used} / {systemInfo.storage.total}
               </p>
             </div>
@@ -167,13 +171,12 @@ export function RealTimeDashboard({ initialData }: RealTimeDashboardProps) {
                   <span className="text-muted-foreground">Core {index}</span>
                   <span className="font-medium">{usage}%</span>
                 </div>
-                <Progress 
-                  value={parseFloat(usage)} 
-                  className={`h-2 ${
-                    parseFloat(usage) > 80 ? '[&>div]:bg-red-500' :
+                <Progress
+                  value={parseFloat(usage)}
+                  className={`h-2 ${parseFloat(usage) > 80 ? '[&>div]:bg-red-500' :
                     parseFloat(usage) > 60 ? '[&>div]:bg-orange-500' :
-                    '[&>div]:bg-green-500'
-                  }`} 
+                      '[&>div]:bg-green-500'
+                    }`}
                 />
               </div>
             ))}

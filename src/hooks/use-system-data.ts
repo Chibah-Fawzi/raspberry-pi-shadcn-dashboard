@@ -45,15 +45,18 @@ export function useSystemData(interval: number = 5000): UseSystemDataReturn {
 
   const connect = useCallback(() => {
     try {
+      console.log('Attempting to connect to WebSocket...');
       const eventSource = new EventSource(`/api/ws?interval=${interval}`);
       
       eventSource.onopen = () => {
+        console.log('WebSocket connection opened');
         setIsConnected(true);
         setError(null);
       };
 
       eventSource.onmessage = (event) => {
         try {
+          console.log('WebSocket message received:', event.data);
           const message = JSON.parse(event.data);
           
           if (message.type === 'system-update') {
@@ -71,11 +74,13 @@ export function useSystemData(interval: number = 5000): UseSystemDataReturn {
 
       eventSource.onerror = (error) => {
         console.error('WebSocket error:', error);
+        console.log('EventSource readyState:', eventSource.readyState);
         setIsConnected(false);
         setError('Connection lost. Attempting to reconnect...');
         
         // Attempt to reconnect after 3 seconds
         setTimeout(() => {
+          console.log('Attempting to reconnect...');
           eventSource.close();
           connect();
         }, 3000);
