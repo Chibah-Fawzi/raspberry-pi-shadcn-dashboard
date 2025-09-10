@@ -1,0 +1,27 @@
+# Development Dockerfile for Raspberry Pi Dashboard
+FROM node:18-alpine
+
+# Install system dependencies for development
+RUN apk add --no-cache \
+    curl \
+    wget \
+    bash \
+    procps
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Start development server
+CMD ["npm", "run", "dev"]

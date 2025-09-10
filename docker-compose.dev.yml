@@ -1,0 +1,41 @@
+services:
+  pi-dashboard-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pi-dashboard-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    volumes:
+      # Mount source code for hot reloading
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      # Mount system directories for system monitoring
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro
+    privileged: true
+    # Required for system monitoring and shutdown functionality
+    cap_add:
+      - SYS_ADMIN
+    # Security options for system access
+    security_opt:
+      - seccomp:unconfined
+    # Use host network for development
+    network_mode: host
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: pi-dashboard-dev-network
