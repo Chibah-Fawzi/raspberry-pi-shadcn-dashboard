@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Execute shutdown command with immediate shutdown
     // Using 'now' option for immediate shutdown without delay
-    await execAsync('sudo shutdown -h now');
+    await execAsync('shutdown -h now');
     
     return NextResponse.json(
       { 

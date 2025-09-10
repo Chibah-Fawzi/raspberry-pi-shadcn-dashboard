@@ -48,7 +48,7 @@ export default async function Home() {
 
           {/* System Control Panel */}
           <div className="flex justify-center">
-            <ShutdownButton />
+            {/* <ShutdownButton /> */}
           </div>
         </section>
 

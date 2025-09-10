@@ -108,7 +108,7 @@ export function ShutdownButton() {
             </Button>
             <Button
               variant="destructive"
-              onClick={handleShutdown}
+              // onClick={handleShutdown}
               disabled={isShuttingDown}
               className="min-w-[120px]"
             >
