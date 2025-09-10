@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="messages"></div>
+    
+    <script>
+        const statusDiv = document.getElementById('status');
+        const messagesDiv = document.getElementById('messages');
+        
+        function addMessage(message) {
+            const p = document.createElement('p');
+            p.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            messagesDiv.appendChild(p);
+        }
+        
+        try {
+            addMessage('Attempting to connect to WebSocket...');
+            const eventSource = new EventSource('/api/ws?interval=5000');
+            
+            eventSource.onopen = () => {
+                addMessage('✅ WebSocket connection opened');
+                statusDiv.textContent = 'Connected';
+                statusDiv.style.color = 'green';
+            };
+            
+            eventSource.onmessage = (event) => {
+                addMessage('📨 Message received: ' + event.data.substring(0, 100) + '...');
+            };
+            
+            eventSource.onerror = (error) => {
+                addMessage('❌ WebSocket error: ' + error);
+                addMessage('ReadyState: ' + eventSource.readyState);
+                statusDiv.textContent = 'Error';
+                statusDiv.style.color = 'red';
+            };
+            
+        } catch (err) {
+            addMessage('❌ Failed to create EventSource: ' + err.message);
+            statusDiv.textContent = 'Failed';
+            statusDiv.style.color = 'red';
+        }
+    </script>
+</body>
+</html>
